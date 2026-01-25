@@ -1,8 +1,14 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException
-from models.post import (Comment, CommentIn, UserPost, UserPostIn,
-                         UserPostWithComments)
+
+from socialAPP.models.post import (
+    Comment,
+    CommentIn,
+    UserPost,
+    UserPostIn,
+    UserPostWithComments,
+)
 
 router = APIRouter()
 
@@ -16,7 +22,7 @@ def find_post(post_id: int):
 
 @router.post("/", response_model=UserPost, status_code=201)
 async def create_post(post: UserPostIn):
-    data = post.dict()
+    data = post.model_dump()
     last_record_id = len(post_table)
     new_post = {**data, "id": last_record_id}
     post_table[last_record_id] = new_post
@@ -68,4 +74,5 @@ async def get_post_with_comments(post_id: int):
     return {"post": post, 
             "comments": await get_comments_for_post(post_id)
             }
+            
             
